@@ -18,14 +18,13 @@ public class Main {
         BaixaEquips eliminador = new BaixaEquips(gestorEquips.getEquips());
         AltaJugadorEntrenador jugadorEntrenador = new AltaJugadorEntrenador();
         fichajes = cargarFichajes();
-        MenuPrincipal(gestorEquips, eliminador, jugadorEntrenador);
+        menuPrincipal(gestorEquips, eliminador, jugadorEntrenador);
     }
 
-
-    public static void MenuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, AltaJugadorEntrenador jugadorEntrenador) {
+    public static void menuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, AltaJugadorEntrenador jugadorEntrenador) {
         Scanner sc = new Scanner(System.in);
-        boolean continuar = true;
-        while (continuar) {
+        boolean continuar = false;
+        do {
             System.out.println("Welcome to Politecnics Football Manager");
             System.out.println("1- Veure classificacio lliga actual 🏆");
             System.out.println("2- Gestionar equip ⚽");
@@ -36,46 +35,74 @@ public class Main {
             System.out.println("7- Disputar nova lliga");
             System.out.println("8- Realitzar sessió entrenament (mercat/fitxages)");
             System.out.println("9- Transferir jugador/a");
-            System.out.println("10- Desar dades");
-            System.out.println("0- Sortir");
+            System.out.println("10- Desar dades equips");
+            System.out.println("0- Sortir \n");
+
             System.out.println("Introdueix la teva opcio: ");
+
             int opcio = sc.nextInt();
-            switch (opcio) {
-                case 1:
-                    break;
-                case 2:
-                    try {
-                        System.out.println("Quin equip vols gestionar?: ");
-                    } catch (IOException e) {
-                        System.out.println("Equip no trobat");
-                    }
-                    System.out.println("1- Donar de Baixa equip");
-                    System.out.println("2- Modificar President/a");
-                    System.out.println("3- Destruir Entrenador");
-                    System.out.println("4- Fitxar jugador/a o entrenador/a");
-                    int opcio2 = sc.nextInt();
-                    switch (opcio2) {
-                        case 1:
-                            eliminador.eliminarEquip();
-                            eliminador.mostrarEquips();
-                            break;
-                        case 2:
-                    }
-                    break;
-                case 3:
-                    gestorEquips.darAltaEquipos();
-                    gestorEquips.mostrarEquipos();
-                    break;
-                case 4:
-                    jugadorEntrenador.main(new String[]{});
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
+            if (opcio < 0 || opcio > 10) {
+                System.out.println("Opcio no valida. Torna a intentar");
+                continuar = false;
+            } else {
+                switch (opcio) {
+                    case 1:
+                        break;
+                    case 2:
+                        mostrarmenusecundario(eliminador);
+                    case 3:
+                        gestorEquips.darAltaEquipos();
+                        gestorEquips.mostrarEquipos();
+                        break;
+                    case 4:
+                        jugadorEntrenador.main(new String[]{});
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 0:
+                        continuar = true;
+                }
             }
-        }
+        } while (!continuar);
     }
+
+    private static void mostrarmenusecundario(BaixaEquips eliminador) {
+        boolean continuar2 = false;
+        int opcio2 = 0;
+        do {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("1- Donar de Baixa equip");
+            System.out.println("2- Modificar President/a");
+            System.out.println("3- Destruir Entrenador");
+            System.out.println("4- Fitxar jugador/a o entrenador/a");
+            System.out.println("0- Sortir \n");
+            System.out.println("Introdueix la teva opcio: ");
+            opcio2 = scanner.nextInt();
+            if (opcio2 > 4 || opcio2 < 0) {
+                System.out.println("Opcio no valida. Torna a intentar");
+                continuar2 = false;
+            } else {
+                switch (opcio2) {
+                    case 1:
+                        eliminador.eliminarEquip();
+                        eliminador.mostrarEquips();
+                        break;
+                    case 2:
+
+                    case 3:
+                    case 4:
+                    case 0:
+                        continuar2 = true;
+                }
+            }
+        } while (!continuar2);
+
+    }
+
     private static List<String> cargarFichajes() throws IOException {
         if (Files.exists(filePath)) {
             return (Files.readAllLines(filePath));

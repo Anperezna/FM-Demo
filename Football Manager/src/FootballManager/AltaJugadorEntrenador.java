@@ -18,14 +18,21 @@ public class AltaJugadorEntrenador {
                     System.out.println("Cognom del Jugador: ");
                     String apellido = sc.nextLine();
                     System.out.println("Data Naixement: ");
-                    String dataNaixement = sc.nextLine();
+                    int dataNaixement = sc.nextInt();
                     System.out.println("Dorsal del Jugador: ");
-                    String dorsal = sc.nextLine();
+                    int dorsal = sc.nextInt();
                     System.out.println("Posicio del jugador: ");
                     String posicio = sc.nextLine();
-                    int cualitat = new Random().nextInt(101);
+                    int qualitat = new Random().nextInt(101);
                     int motivacio = 5;
-                    System.out.println("Dades del Jugador: \n" + "Nom: " + nombre + "\n" + "Cognom: " + apellido + "\n" + "Data Naixement: " + dataNaixement  + "\n" + "Dorsal: " + dorsal + "\n" + "Posicio: " + posicio + "\n" + "Qualitat: " + cualitat + "\n" + "Motivacio: " + motivacio);
+                    System.out.println("Dades del Jugador: \n" +
+                            "Nom: " + nombre + "\n" +
+                            "Cognom: " + apellido + "\n" +
+                            "Data Naixement: " + dataNaixement  + "\n" +
+                            "Dorsal: " + dorsal + "\n" +
+                            "Posicio: " + posicio + "\n" +
+                            "Qualitat: " + qualitat + "\n" +
+                            "Motivacio: " + motivacio);
                     break;
                 case "entrenador":
                     System.out.println("Nom del entrenador: ");
