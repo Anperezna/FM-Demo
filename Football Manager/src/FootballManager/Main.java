@@ -17,12 +17,15 @@ public class Main {
     private static final Path filePath = Paths.get(fileName);
     private static List<Entrenador> entrenadores = new ArrayList<>();
     private static List<Jugador> jugadores = new ArrayList<>();
+    private static List<Persona> personas = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         DarAltaEquipos gestorEquips = new DarAltaEquipos();
         BaixaEquips eliminador = new BaixaEquips(gestorEquips.getEquips());
         AltaJugadorEntrenador jugadorEntrenador = new AltaJugadorEntrenador();
 
+        Entrenador entrenador = new Entrenador();
+        Jugador jugador = new Jugador();
         President president = new President();
         Lliga lliga = new Lliga();
         MercatFitxages mercat = new MercatFitxages();
@@ -50,8 +53,8 @@ public class Main {
             System.out.println("0- Sortir \n");
 
             System.out.println("Introdueix la teva opcio: ");
-
             int opcio = sc.nextInt();
+
             if (opcio < 0 || opcio > 10) {
                 System.out.println("Opcio no valida. Torna a intentar");
                 continuar = false;
@@ -103,7 +106,6 @@ public class Main {
         do {
             System.out.println("Quieres entrenador o jugador?: ");
             persona = scanner.nextLine().toLowerCase();
-
             if (persona.equals("entrenador")) {
                 nomPersona(nom, cognom, fecha);
                 motivacio(motivacio);
@@ -193,6 +195,8 @@ public class Main {
         cognom = scanner.nextLine();
         System.out.println("Data de Naixement: ");
         fecha = scanner.nextLine();
+
+
     }
 
     private static void motivacio(int motivacio) {

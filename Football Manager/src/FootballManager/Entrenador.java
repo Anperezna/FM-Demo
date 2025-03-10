@@ -29,6 +29,10 @@ public class Entrenador {
         this.sou_anual = sou_anual;
     }
 
+    public Entrenador() {
+
+    }
+
 
     //Getter and Setter
 

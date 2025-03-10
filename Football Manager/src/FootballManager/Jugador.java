@@ -31,6 +31,10 @@ public class Jugador {
         this.qualitat = qualitat;
     }
 
+    public Jugador() {
+
+    }
+
 
     // Metodes
 
