@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.function.BinaryOperator;
 
 public class Main {
     private static List<String> fichajes;
@@ -18,6 +16,7 @@ public class Main {
     private static List<Entrenador> entrenadores = new ArrayList<>();
     private static List<Jugador> jugadores = new ArrayList<>();
     private static List<Persona> personas = new ArrayList<>();
+    private static ArrayList<Equip> equips = new ArrayList<Equip>();
 
     public static void main(String[] args) throws IOException {
         DarAltaEquipos gestorEquips = new DarAltaEquipos();
@@ -30,15 +29,20 @@ public class Main {
         Lliga lliga = new Lliga();
         MercatFitxages mercat = new MercatFitxages();
 
+        String nom = null;
+
 
         fichajes = cargarFichajes();
-        menuPrincipal(gestorEquips, eliminador, jugadorEntrenador);
+        menuPrincipal(gestorEquips, eliminador, jugadorEntrenador, nom);
     }
 
-    public static void menuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, AltaJugadorEntrenador jugadorEntrenador) {
+
+    public static void menuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, AltaJugadorEntrenador jugadorEntrenador, String nom) {
         Scanner sc = new Scanner(System.in);
         boolean continuar = false;
+
         do {
+            System.out.println("<---------------MENU--------------->");
             System.out.println("Welcome to Politecnics Football Manager");
             System.out.println("1- Veure classificacio lliga actual 🏆");
             System.out.println("2- Gestionar equip ⚽");
@@ -50,36 +54,104 @@ public class Main {
             System.out.println("8- Realitzar sessió entrenament (mercat/fitxages)");
             System.out.println("9- Transferir jugador/a");
             System.out.println("10- Desar dades equips");
-            System.out.println("0- Sortir \n");
-
+            System.out.println("0- Sortir");
+            System.out.println("<---------------MENU---------------> \n");
             System.out.println("Introdueix la teva opcio: ");
-            int opcio = sc.nextInt();
 
-            if (opcio < 0 || opcio > 10) {
-                System.out.println("Opcio no valida. Torna a intentar");
-                continuar = false;
-            } else {
-                switch (opcio) {
-                    case 1:
-                        break;
-                    case 2:
-                        mostrarmenusecundario(eliminador);
-                    case 3:
-                        gestorEquips.darAltaEquipos();
-                        gestorEquips.mostrarEquipos();
-                        break;
-                    case 4:
-                        menuPersona();
-                        break;
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                    case 10:
-                    case 0:
-                        continuar = true;
+            try {
+                int opcio = sc.nextInt(); // Intentar leer un entero
+
+                if (opcio < 0 || opcio > 10) {
+                    System.out.println("Opcio no valida. Torna a intentar");
+                } else {
+                    switch (opcio) {
+                        case 1:
+                            break;
+                        case 2:
+                            mostrarmenusecundario(eliminador);
+                            break;
+                        case 3:
+                            darAltaEquipos(nom);
+                            break;
+                        case 4:
+                            menuPersona();
+                            break;
+                        case 5:
+                            consultarDadesEquip(nom);
+                            break;
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9:
+                        case 10:
+                        case 0:
+                            continuar = true;
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("Error. Debes ingresar un número entero...");
+                sc.next();
+            }
+        } while (!continuar);
+    }
+
+    // 3.- DONAR ALTA EQUIP
+
+    public static void darAltaEquipos(String nom) {
+        Scanner scanner = new Scanner(System.in);
+        boolean continuar = false;
+        boolean continuar2 = false;
+        int any_fundacio = 0;
+        int numeroEquipos = 0;
+
+        do {
+            System.out.println("Quants equips vols crear? \n 0.- Para salir: ");
+            numeroEquipos = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer
+
+            if (numeroEquipos < 0) {
+                System.out.println("El numero no puede ser negativo ni 0");
+            } else if (numeroEquipos == 0) {
+                continuar = true;
+            } else {
+                for (int i = 0; i < numeroEquipos; i++) {
+                    System.out.print("Nom del equip " + (i + 1) + ": ");
+                    nom = scanner.nextLine().toLowerCase();
+
+                    // Verificar si el equipo ya existe
+                    boolean existe = false;
+                    for (Equip equip : equips) {
+                        if (equip.getNom().equals(nom)) {
+                            existe = true;
+                            break;
+                        }
+                    }
+
+                    if (existe) {
+                        System.out.println("El nombre de este equipo ya existe. No se ha creado el equipo.");
+                        continue; // Saltar al siguiente ciclo del for
+                    }
+
+                    do {
+                        System.out.println("Introduce el año de fundación: ");
+                        any_fundacio = scanner.nextInt();
+                        scanner.nextLine(); // Limpiar el buffer
+                        if (any_fundacio < 1857 || any_fundacio > 2025) {
+                            System.out.println("El equipo no puede ser tan antiguo, o al menos no tanto como el equipo más antiguo del mundo...");
+                            continuar2 = false;
+                        } else {
+                            continuar2 = true;
+                        }
+                    } while (!continuar2);
+
+                    System.out.println("Introduce la ciudad del equipo: ");
+                    String ciudad = scanner.nextLine().toLowerCase();
+
+                    // Agregar el nuevo equipo a la lista
+                    equips.add(new Equip(nom, any_fundacio, ciudad));
+                    System.out.println("Equip creat amb èxit!");
+                }
+                continuar = true;
             }
         } while (!continuar);
     }
@@ -120,7 +192,7 @@ public class Main {
                 souAnual(sou_anual);
                 dorsal(dorsal);
                 posicioJugador(posicio);
-                int qualitat = numeroRandom(min,max);
+                int qualitat = numeroRandom(min, max);
                 jugadores.add(new Jugador(nom, cognom, fecha, motivacio, sou_anual, dorsal, posicio, qualitat));
                 continuar = true;
             } else {
@@ -152,7 +224,7 @@ public class Main {
             if (seleccionador2.equals("si")) {
                 seleccionador = true;
                 continuar = true;
-            } else if (seleccionador2.equals("no")){
+            } else if (seleccionador2.equals("no")) {
                 continuar = true;
             } else {
                 continuar = false;
@@ -173,7 +245,6 @@ public class Main {
             System.out.println("Posicio del jugador: ");
             posicio = scanner.nextLine().toLowerCase();
             if (posicio.equals("porter") || posicio.equals("defensa") || posicio.equals("migcampista") || posicio.equals("davanter")) {
-                System.out.println("Posicio del jugador: " + posicio);
                 continuar = true;
             } else {
                 System.out.println("Introduce otra posicion");
@@ -228,6 +299,18 @@ public class Main {
         } while (!continuar2);
     }
 
+    // 5.- CONSULTAR DADES EQUIP
+
+    private static void consultarDadesEquip(String nom) {
+        if (equips.isEmpty()) {
+            System.out.println("No hay equipos creados.");
+        } else {
+            for (Equip equip : equips) {
+                System.out.println(equip);
+            }
+        }
+    }
+
     // DAVID
 
     private static void mostrarmenusecundario(BaixaEquips eliminador) {
@@ -266,7 +349,7 @@ public class Main {
     private static List<String> cargarFichajes() throws IOException {
         if (Files.exists(filePath)) {
             return (Files.readAllLines(filePath));
-            } else {
+        } else {
             return (new ArrayList<>());
         }
     }
