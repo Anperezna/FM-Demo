@@ -3,11 +3,11 @@ package FootballManager;
 abstract class Persona {
     protected String nom;
     protected String cognom;
-    protected String fecha;
+    protected int fecha;
     protected int motivacio; // 1-10 nivell de motivacio
     protected double sou_anual;
 
-    public Persona(String nom, String cognom, String fecha, int motivacio, double sou_anual) {
+    public Persona(String nom, String cognom, int fecha, int motivacio, double sou_anual) {
         this.nom = nom;
         this.cognom = cognom;
         this.fecha = fecha;
@@ -31,11 +31,11 @@ abstract class Persona {
         this.cognom = cognom;
     }
 
-    public String getFecha() {
+    public int getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(int fecha) {
         this.fecha = fecha;
     }
 
