@@ -13,31 +13,25 @@ public class Main {
     private static List<String> fichajes;
     private static final String fileName = "src/FootballManager/mercat_fitxages.txt";
     private static final Path filePath = Paths.get(fileName);
-    private static List<Entrenador> entrenadores = new ArrayList<>();
-    private static List<Jugador> jugadores = new ArrayList<>();
     private static List<Persona> personas = new ArrayList<>();
     private static ArrayList<Equip> equips = new ArrayList<Equip>();
 
     public static void main(String[] args) throws IOException {
         DarAltaEquipos gestorEquips = new DarAltaEquipos();
         BaixaEquips eliminador = new BaixaEquips(gestorEquips.getEquips());
-        AltaJugadorEntrenador jugadorEntrenador = new AltaJugadorEntrenador();
 
-        Entrenador entrenador = new Entrenador();
-        Jugador jugador = new Jugador();
         President president = new President();
         Lliga lliga = new Lliga();
-        MercatFitxages mercat = new MercatFitxages();
 
         String nom = null;
 
 
         fichajes = cargarFichajes();
-        menuPrincipal(gestorEquips, eliminador, jugadorEntrenador, nom);
+        menuPrincipal(gestorEquips, eliminador, nom);
     }
 
 
-    public static void menuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, AltaJugadorEntrenador jugadorEntrenador, String nom) {
+    public static void menuPrincipal(DarAltaEquipos gestorEquips, BaixaEquips eliminador, String nom) {
         Scanner sc = new Scanner(System.in);
         boolean continuar = false;
 
@@ -80,6 +74,7 @@ public class Main {
                             consultarDadesEquip(nom);
                             break;
                         case 6:
+                            consultarJugadorEquip(nom);
                         case 7:
                         case 8:
                         case 9:
@@ -110,7 +105,7 @@ public class Main {
             scanner.nextLine(); // Limpiar el buffer
 
             if (numeroEquipos < 0) {
-                System.out.println("El numero no puede ser negativo ni 0");
+                System.out.println("El numero no puede ser negativo...");
             } else if (numeroEquipos == 0) {
                 continuar = true;
             } else {
@@ -179,21 +174,23 @@ public class Main {
             System.out.println("Quieres entrenador o jugador?: ");
             persona = scanner.nextLine().toLowerCase();
             if (persona.equals("entrenador")) {
-                nomPersona(nom, cognom, fecha);
+                nomPersona();
                 motivacio(motivacio);
                 seleccionadorEntrenador(seleccionador, seleccionador2);
                 tornejosEntrenador(tornejos);
                 souAnual(sou_anual);
-                entrenadores.add(new Entrenador(nom, cognom, fecha, motivacio, seleccionador, tornejos, sou_anual));
+                Entrenador entrenador = new Entrenador(nom, cognom, fecha, motivacio,sou_anual, tornejos, seleccionador);
+                personas.add(entrenador);
                 continuar = true;
             } else if (persona.equals("jugador")) {
-                nomPersona(nom, cognom, fecha);
+                nomPersona();
                 motivacio(motivacio);
                 souAnual(sou_anual);
                 dorsal(dorsal);
                 posicioJugador(posicio);
                 int qualitat = numeroRandom(min, max);
-                jugadores.add(new Jugador(nom, cognom, fecha, motivacio, sou_anual, dorsal, posicio, qualitat));
+                Jugador jugador = new Jugador(nom, cognom, fecha, motivacio, sou_anual, dorsal, posicio, qualitat);
+                personas.add(jugador);
                 continuar = true;
             } else {
                 System.out.println("Opcio no valida. Torna a intentar...");
@@ -258,16 +255,18 @@ public class Main {
         sou_anual = scanner.nextDouble();
     }
 
-    private static void nomPersona(String nom, String cognom, String fecha) {
+    private static void nomPersona() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Nom: ");
-        nom = scanner.nextLine();
+        String nom = scanner.nextLine();
         System.out.println("Cognom: ");
-        cognom = scanner.nextLine();
+        String cognom = scanner.nextLine();
+    }
+
+    private static void fecha() {
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Data de Naixement: ");
-        fecha = scanner.nextLine();
-
-
+        int fecha = scanner.nextInt();
     }
 
     private static void motivacio(int motivacio) {
@@ -309,6 +308,57 @@ public class Main {
                 System.out.println(equip);
             }
         }
+    }
+
+    // 6.- CONSULTAR DADES JUGADOR EQUIP
+
+    private static void consultarJugadorEquip(String nom) {
+        Scanner scanner = new Scanner(System.in);
+        boolean encontradoEquipo = false;
+        boolean encontradoJugador = false;
+
+        do {
+            System.out.println("Introdueix el nom del equip a buscar: ");
+            String nombreEquipo = scanner.nextLine().toLowerCase();
+
+            for (Equip equip : equips) {
+                if (nombreEquipo.equals(equip.getNom())) {
+                    System.out.println("El equipo ha sido encontrado.");
+                    encontradoEquipo = true;
+
+                    do {
+                        System.out.println("Introduce el nombre del jugador: ");
+                        String nombreJugador = scanner.nextLine();
+
+                        for (Persona persona : personas) {
+                            if (persona instanceof Jugador && nombreJugador.equals(persona.getNom())) {
+                                Jugador jugador = (Jugador) persona;
+                                System.out.println("Dades del jugador:");
+                                System.out.println("Nom: " + jugador.getNom());
+                                System.out.println("Cognom: " + jugador.getCognom());
+                                System.out.println("Data de Naixement: " + jugador.getFecha());
+                                System.out.println("Motivació: " + jugador.getMotivacio());
+                                System.out.println("Sou anual: " + jugador.getSou_anual());
+                                System.out.println("Dorsal: " + jugador.getDorsal());
+                                System.out.println("Posició: " + jugador.getPosicio());
+                                System.out.println("Qualitat: " + jugador.getQualitat());
+                                encontradoJugador = true;
+                            }
+                        }
+
+                        if (!encontradoJugador) {
+                            System.out.println("EL JUGADOR NO EXISTE EN ESTE EQUIPO. Intenta de nuevo.");
+                        }
+                    } while (!encontradoJugador);
+
+                    break; // Salir del bucle si se encuentra el equipo
+                }
+            }
+
+            if (!encontradoEquipo) {
+                System.out.println("EL EQUIPO NO HA SIDO ENCONTRADO. Intenta de nuevo.");
+            }
+        } while (!encontradoEquipo);
     }
 
     // DAVID
